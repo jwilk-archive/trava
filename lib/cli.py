@@ -57,7 +57,7 @@ url_re = re.compile(
     r'''
     \A
     https://travis-ci.org/
-    (?P<project>\w+/\w+)/
+    (?P<project>[\w-]+/[\w-]+)/
     (?:
       builds/(?P<build>\d+)
     | jobs/(?P<job>\d+)
