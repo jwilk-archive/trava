@@ -101,7 +101,7 @@ def show_build(project, build_id):
         template = '#{number} {config}'
         if job['finished_at'] is None:
             template = '{t.yellow}' + template
-        if job['result']:
+        elif job['result'] != 0:
             template = '{t.bold}{t.red}' + template
         template = template + '{t.off}'
         config = []
