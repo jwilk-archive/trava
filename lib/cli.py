@@ -99,6 +99,8 @@ def show_build(project, build_id):
             config_coll[key].add(value)
     for job in data['matrix']:
         template = '#{number} {config}'
+        if job['finished_at'] is None:
+            template = '{t.yellow}' + template
         if job['result']:
             template = '{t.bold}{t.red}' + template
         template = template + '{t.off}'
