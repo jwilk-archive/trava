@@ -73,7 +73,7 @@ def main():
     options = ap.parse_args()
     match = url_re.match(options.url)
     if match is None:
-        ap.error('invalid URL')
+        ap.error('unsupported URL')
     with lib.pager.autopager():
         _main(match)
 
