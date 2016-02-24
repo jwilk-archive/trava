@@ -83,6 +83,36 @@ def main():
     with lib.pager.autopager():
         return cmd(**match.groupdict())
 
+@dispatch('branches')
+def show_branches(project):
+    url = 'https://api.travis-ci.org/repos/{project}/branches'
+    url = url.format(project=project)
+    data = get_json(url)
+    commits = {c['id']: c for c in data['commits']}
+    for branch in data['branches']:
+        commit = commits[branch['commit_id']]
+        template = '#{number} {branch} {state}'
+        curious = False
+        if branch['finished_at'] is None:
+            template = '{t.yellow}' + template
+        elif branch['state'] != 'passed':
+            template = '{t.bold}{t.red}' + template
+            curious = True
+        lib.colors.print(template,
+            number=branch['number'],
+            branch=commit['branch'],
+            state=branch['state'],
+        )
+        url = 'https://travis-ci.org/{project}/builds/{id}'
+        url = url.format(project=project, id=branch['id'])
+        template = '{t.cyan}'
+        if curious:
+            template += '{t.bold}'
+        template += '{url}{t.off}'
+        lib.colors.print(template, url=url, space='')
+        print()
+        #print(branch)
+
 @dispatch('builds/(?P<build_id>\d+)')
 def show_build(project, build_id):
     url = 'https://api.travis-ci.org/repos/{project}/builds/{id}'
