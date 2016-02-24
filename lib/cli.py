@@ -29,6 +29,7 @@ import json
 import re
 import shutil
 import sys
+import urllib.parse
 import urllib.request
 
 import lib.colors
@@ -71,7 +72,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('url', metavar='URL')
     options = ap.parse_args()
-    match = url_re.match(options.url)
+    url = urllib.parse.urljoin('https://travis-ci.org/', options.url)
+    match = url_re.match(url)
     if match is None:
         ap.error('unsupported URL')
     with lib.pager.autopager():
