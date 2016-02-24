@@ -54,41 +54,36 @@ def get_json(url, headers=()):
         with io.TextIOWrapper(fp) as tfp:
             return json.load(tfp)
 
-url_re = re.compile(
-    r'''
-    \A
-    https://travis-ci.org/
-    (?P<project>[\w-]+/[\w-]+)/
-    (?:
-      builds/(?P<build>\d+)
-    | jobs/(?P<job>\d+)
-    )
-    \Z
-    ''',
-    re.VERBOSE
-)
+
+_dispatch = []
+
+def dispatch(regex):
+    def decorator(cmd):
+        _dispatch.append((regex, cmd))
+        return cmd
+    return decorator
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('url', metavar='URL')
     options = ap.parse_args()
     url = urllib.parse.urljoin('https://travis-ci.org/', options.url)
-    match = url_re.match(url)
-    if match is None:
+    (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
+    if scheme not in {'http', 'https'}:
+        ap.error('unsupported URL')
+    if netloc != 'travis-ci.org':
+        ap.error('unsupported URL')
+    for regex, cmd in _dispatch:
+        regex = r'\A/(?P<project>[\w-]+/[\w-]+)/{re}\Z'.format(re=regex)
+        match = re.match(regex, path)
+        if match is not None:
+            break
+    else:
         ap.error('unsupported URL')
     with lib.pager.autopager():
-        _main(match)
+        return cmd(**match.groupdict())
 
-def _main(match):
-    project = match.group('project')
-    build_id = match.group('build')
-    if build_id is not None:
-        return show_build(project, build_id)
-    job_id = match.group('job')
-    if job_id is not None:
-        return show_job(job_id)
-    raise NotImplementedError
-
+@dispatch('builds/(?P<build_id>\d+)')
 def show_build(project, build_id):
     url = 'https://api.travis-ci.org/repos/{project}/builds/{id}'
     url = url.format(project=project, id=build_id)
@@ -126,7 +121,8 @@ def show_build(project, build_id):
         lib.colors.print(template, url=url, space='')
         print()
 
-def show_job(job_id):
+@dispatch('jobs/(?P<job_id>\d+)')
+def show_job(project, job_id):
     url = 'https://api.travis-ci.org/jobs/{id}/log.txt'
     url = url.format(id=job_id)
     with get(url) as fp:
