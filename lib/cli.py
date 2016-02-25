@@ -54,7 +54,6 @@ def get_json(url, headers=()):
         with io.TextIOWrapper(fp) as tfp:
             return json.load(tfp)
 
-
 _dispatch = []
 
 def dispatch(regex):
