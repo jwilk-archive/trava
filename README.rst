@@ -1,15 +1,18 @@
 *trava* is a tiny command-line Travis CI client.
 
-Usage::
+Usage:
 
-   # show information about the latest branches:
-   trava https://travis-ci.org/<user>/<project>
+ * show information about the latest branches::
 
-   # show information about the build:
-   trava https://travis-ci.org/<user>/<project>/build/<build-id>
+      trava https://travis-ci.org/<user>/<project>
 
-   # show the job log:
-   trava https://travis-ci.org/<user>/<project>/jobs/<job-id>
+ * show information about the build::
+
+      trava https://travis-ci.org/<user>/<project>/build/<build-id>
+
+ * show the job log::
+
+      trava https://travis-ci.org/<user>/<project>/jobs/<job-id>
 
 You can omit the ``https://travis-ci.org/`` prefix.
 
