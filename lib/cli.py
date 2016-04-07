@@ -73,7 +73,8 @@ def main():
     if netloc != 'travis-ci.org':
         ap.error('unsupported URL')
     for regex, cmd in _dispatch:
-        regex = r'\A/(?P<project>[\w-]+/[\w-]+)/{re}\Z'.format(re=regex)
+        regex = ('/' if regex else '') + regex
+        regex = r'\A/(?P<project>[\w-]+/[\w-]+){re}\Z'.format(re=regex)
         match = re.match(regex, path)
         if match is not None:
             break
@@ -82,6 +83,7 @@ def main():
     with lib.pager.autopager():
         return cmd(**match.groupdict())
 
+@dispatch('')
 @dispatch('branches')
 def show_branches(project):
     url = 'https://api.travis-ci.org/repos/{project}/branches'
