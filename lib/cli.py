@@ -112,7 +112,6 @@ def show_branches(project):
         template += '{url}{t.off}'
         lib.colors.print(template, url=url, space='')
         print()
-        #print(branch)
 
 @dispatch('builds/(?P<build_id>\d+)')
 def show_build(project, build_id):
