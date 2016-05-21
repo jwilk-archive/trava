@@ -2,15 +2,15 @@
 
 Usage:
 
- * show information about the latest branches::
+* show information about the latest branches::
 
       trava https://travis-ci.org/<user>/<project>
 
- * show information about the build::
+* show information about the build::
 
       trava https://travis-ci.org/<user>/<project>/build/<build-id>
 
- * show the job log::
+* show the job log::
 
       trava https://travis-ci.org/<user>/<project>/jobs/<job-id>
 
