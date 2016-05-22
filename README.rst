@@ -1,4 +1,4 @@
-*trava* is a tiny command-line Travis CI client.
+**trava** is a tiny command-line Travis CI client.
 
 Usage:
 
