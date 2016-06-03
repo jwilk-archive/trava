@@ -64,6 +64,7 @@ def dispatch(regex):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument('--clean-lf', action='store_true')
     ap.add_argument('url', metavar='URL')
     options = ap.parse_args()
     url = urllib.parse.urljoin('https://travis-ci.org/', options.url)
@@ -156,7 +157,13 @@ def show_job(options, project, job_id):
     url = 'https://api.travis-ci.org/jobs/{id}/log.txt'
     url = url.format(id=job_id)
     with get(url) as fp:
-        shutil.copyfileobj(fp, sys.stdout.buffer)
+        if options.clean_lf:
+            for line in fp:
+                line = line.rstrip(b'\r\n').rsplit(b'\r', 1)[-1]
+                sys.stdout.buffer.write(line)
+                sys.stdout.buffer.write(b'\n')
+        else:
+            shutil.copyfileobj(fp, sys.stdout.buffer)
 
 __all__ = ['main']
 
