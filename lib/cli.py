@@ -81,11 +81,11 @@ def main():
     else:
         ap.error('unsupported URL')
     with lib.pager.autopager():
-        return cmd(**match.groupdict())
+        return cmd(options, **match.groupdict())
 
 @dispatch('')
 @dispatch('branches')
-def show_branches(project):
+def show_branches(options, project):
     url = 'https://api.travis-ci.org/repos/{project}/branches'
     url = url.format(project=project)
     data = get_json(url)
@@ -114,7 +114,7 @@ def show_branches(project):
         print()
 
 @dispatch('builds/(?P<build_id>\d+)')
-def show_build(project, build_id):
+def show_build(options, project, build_id):
     url = 'https://api.travis-ci.org/repos/{project}/builds/{id}'
     url = url.format(project=project, id=build_id)
     data = get_json(url)
@@ -152,7 +152,7 @@ def show_build(project, build_id):
         print()
 
 @dispatch('jobs/(?P<job_id>\d+)')
-def show_job(project, job_id):
+def show_job(options, project, job_id):
     url = 'https://api.travis-ci.org/jobs/{id}/log.txt'
     url = url.format(id=job_id)
     with get(url) as fp:
