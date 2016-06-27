@@ -28,6 +28,7 @@ import io
 import json
 import re
 import shutil
+import subprocess
 import sys
 import urllib.parse
 import urllib.request
@@ -62,11 +63,24 @@ def dispatch(regex):
         return cmd
     return decorator
 
+def get_git_url():
+    url = subprocess.check_output('git remote get-url origin'.split())
+    url = url.decode('ASCII').rstrip()
+    (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
+    if netloc == 'github.com':
+        if path.endswith('.git'):
+            path = path[:-4]
+        return path
+    else:
+        return
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--raw-cr', action='store_true')
-    ap.add_argument('url', metavar='URL')
+    ap.add_argument('url', metavar='URL', nargs='?')
     options = ap.parse_args()
+    if options.url is None:
+        options.url = get_git_url()
     url = urllib.parse.urljoin('https://travis-ci.org/', options.url)
     (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
     if scheme not in {'http', 'https'}:
