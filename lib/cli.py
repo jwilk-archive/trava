@@ -64,7 +64,12 @@ def dispatch(regex):
     return decorator
 
 def get_git_url():
-    url = subprocess.check_output('git remote get-url origin'.split())
+    try:
+        url = subprocess.check_output('git remote get-url origin'.split())
+    except subprocess.CalledProcessError as exc:
+        if exc.returncode == 128:
+            return
+        raise
     url = url.decode('ASCII').rstrip()
     (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
     if netloc == 'github.com':
@@ -81,6 +86,8 @@ def main():
     options = ap.parse_args()
     if options.url is None:
         options.url = get_git_url()
+        if options.url is None:
+            ap.error('the following argument is required: URL')
     url = urllib.parse.urljoin('https://travis-ci.org/', options.url)
     (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
     if scheme not in {'http', 'https'}:
