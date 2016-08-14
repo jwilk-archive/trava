@@ -148,9 +148,11 @@ def show_build(options, project, build_id):
             config_coll[key].add(value)
     for job in data['matrix']:
         template = '#{number} {config}'
+        error = False
         if job['finished_at'] is None:
             template = '{t.yellow}' + template
         elif job['result'] != 0:
+            error = True
             template = '{t.bold}{t.red}' + template
         template = template + '{t.off}'
         config = []
@@ -167,7 +169,7 @@ def show_build(options, project, build_id):
         url = 'https://travis-ci.org/{project}/jobs/{id}'
         url = url.format(project=project, id=job['id'])
         template = '{t.cyan}'
-        if job['result']:
+        if error:
             template += '{t.bold}'
         template += '{url}{t.off}'
         lib.colors.print(template, url=url, space='')
