@@ -44,7 +44,7 @@ def get(url, headers=()):
         {'User-Agent': user_agent}
     )
     request = urllib.request.Request(url, headers=headers)
-    return urllib.request.urlopen(request)
+    return urllib.request.urlopen(request, cadefault=True)
 
 def get_json(url, headers=()):
     headers = dict(headers)
