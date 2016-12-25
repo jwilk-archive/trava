@@ -6,6 +6,6 @@ python:
 - "3.6-dev"
 - "3.7-dev"
 script:
-- ./trava
+- ./trava .
 
 # vim:ts=2 sts=2 sw=2 et
