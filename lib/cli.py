@@ -82,12 +82,10 @@ def get_git_url():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--raw-cr', action='store_true')
-    ap.add_argument('url', metavar='URL', nargs='?')
+    ap.add_argument('url', metavar='URL')
     options = ap.parse_args()
-    if options.url is None:
+    if options.url == '.':
         options.url = get_git_url()
-        if options.url is None:
-            ap.error('the following argument is required: URL')
     url = urllib.parse.urljoin('https://travis-ci.org/', options.url)
     (scheme, netloc, path, query, fragment) = urllib.parse.urlsplit(url)
     if scheme not in {'http', 'https'}:
