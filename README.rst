@@ -6,6 +6,10 @@ Usage:
 
       trava https://travis-ci.org/<user>/<project>
 
+  or, for the GitHub repo in current working directory::
+
+      trava .
+
 * show information about the build::
 
       trava https://travis-ci.org/<user>/<project>/build/<build-id>
