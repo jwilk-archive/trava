@@ -1,0 +1,11 @@
+language: python
+python:
+- "3.3"
+- "3.4"
+- "3.5"
+- "3.6-dev"
+- "3.7-dev"
+script:
+- ./trava
+
+# vim:ts=2 sts=2 sw=2 et
