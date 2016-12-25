@@ -135,7 +135,7 @@ def show_branches(options, project):
         lib.colors.print(template, url=url, space='')
         print()
 
-@dispatch('builds/(?P<build_id>\d+)')
+@dispatch(r'builds/(?P<build_id>\d+)')
 def show_build(options, project, build_id):
     url = 'https://api.travis-ci.org/repos/{project}/builds/{id}'
     url = url.format(project=project, id=build_id)
@@ -175,7 +175,7 @@ def show_build(options, project, build_id):
         lib.colors.print(template, url=url, space='')
         print()
 
-@dispatch('jobs/(?P<job_id>\d+)')
+@dispatch(r'jobs/(?P<job_id>\d+)')
 def show_job(options, project, job_id):
     url = 'https://api.travis-ci.org/jobs/{id}/log.txt'
     url = url.format(id=job_id)
