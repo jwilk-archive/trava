@@ -65,7 +65,7 @@ def dispatch(regex):
 
 def get_git_url():
     try:
-        url = subprocess.check_output('git remote get-url origin'.split())
+        url = subprocess.check_output('git ls-remote --get-url'.split())
     except subprocess.CalledProcessError as exc:
         if exc.returncode == 128:
             return
