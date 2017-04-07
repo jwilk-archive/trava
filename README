@@ -1,6 +1,10 @@
+Overview
+========
+
 **trava** is a tiny command-line Travis CI client.
 
-Usage:
+Usage
+=====
 
 * show information about the latest branches::
 
