@@ -9,8 +9,11 @@ python:
 - "3.7-dev"
 install:
 - pip install docutils
+- pip install pydiatra pyflakes
 script:
 - ./trava .
+- python3 -m pyflakes trava lib/*.py
+- python3 -m pydiatra trava lib/*.py
 - private/check-rst
 
 # vim:ts=2 sts=2 sw=2 et
