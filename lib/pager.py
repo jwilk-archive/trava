@@ -8,15 +8,29 @@ automatic pager
 import contextlib
 import io
 import os
+import shutil
 import subprocess as ipc
 import sys
+
+def _find_command(command):
+    if shutil.which(command):
+        return command
+
+def get_default_pager():
+    # Use "pager" if it exist:
+    # https://www.debian.org/doc/debian-policy/#document-ch-customized-programs
+    # Fall back to "more", which is in POSIX.
+    return (
+        _find_command('pager')
+        or 'more'
+    )
 
 @contextlib.contextmanager
 def autopager():
     if not sys.stdout.isatty():
         yield
         return
-    cmdline = os.environ.get('PAGER', 'pager')
+    cmdline = os.environ.get('PAGER') or get_default_pager()
     if cmdline == 'cat':
         yield
         return
