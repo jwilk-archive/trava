@@ -135,7 +135,7 @@ def show_build(options, project, build_id):
         elif job['result'] != 0:
             error = True
             template = '{t.bold}{t.red}' + template
-        template = template + '{t.off}'
+        template += '{t.off}'
         config = []
         for key, value in sorted(job['config'].items()):
             if key.startswith('.'):
