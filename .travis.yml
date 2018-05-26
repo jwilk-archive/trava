@@ -15,8 +15,8 @@ install:
 - pip install restructuredtext-lint
 script:
 - ./trava .
-- python3 -m pyflakes trava lib/*.py
-- python3 -m pydiatra trava lib/*.py
+- python3 -m pyflakes .
+- python3 -m pydiatra .
 - restructuredtext-lint --encoding=UTF-8 README
 
 # vim:ts=2 sts=2 sw=2 et
