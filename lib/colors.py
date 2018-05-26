@@ -15,6 +15,8 @@ class _seq:
     cyan = '\x1B[36m'
     bold = '\x1B[1m'
     off = '\x1B[0m'
+    reverse = '\x1B[7m'
+    unreverse = '\x1B[27m'
 
 def _quote_unsafe_char(ch):
     if ch == '\t':
