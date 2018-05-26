@@ -35,7 +35,7 @@ def get_json(url, headers=()):
         {'Content-Type': 'application/vnd.travis-ci.2+json'}
     )
     with get(url, headers) as fp:
-        with io.TextIOWrapper(fp) as tfp:
+        with io.TextIOWrapper(fp, encoding='UTF-8') as tfp:
             return json.load(tfp)
 
 _dispatch = []
