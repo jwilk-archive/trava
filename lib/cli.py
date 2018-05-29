@@ -122,12 +122,13 @@ def show_build(options, project, build_id):
     url = url.format(project=project, id=build_id)
     data = get_json(url)
     config_coll = collections.defaultdict(set)
-    for job in data['matrix']:
+    matrix = data['matrix']
+    for job in matrix:
         for key, value in job['config'].items():
             if isinstance(value, (dict, list)):
                 continue
             config_coll[key].add(value)
-    for job in data['matrix']:
+    for job in matrix:
         template = '#{number} {config}'
         error = False
         if job['finished_at'] is None:
