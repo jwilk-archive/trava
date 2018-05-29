@@ -123,8 +123,12 @@ def show_build(options, project, build_id):
     data = get_json(url)
     config_coll = collections.defaultdict(set)
     matrix = data['matrix']
+    config_keys = set()
     for job in matrix:
-        for key, value in job['config'].items():
+        config_keys |= set(job['config'])
+    for job in matrix:
+        for key in config_keys:
+            value = job['config'].get(key)
             if isinstance(value, (dict, list)):
                 continue
             config_coll[key].add(value)
