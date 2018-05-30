@@ -123,9 +123,12 @@ def show_build(options, project, build_id):
     data = get_json(url)
     config_coll = collections.defaultdict(set)
     matrix = data['matrix']
-    config_keys = set()
+    config_keys = collections.Counter()
     for job in matrix:
-        config_keys |= set(job['config'])
+        config_keys.update(job['config'].keys())
+    def config_sort(item):
+        (key, value) = item
+        return (-config_keys[key], key)
     for job in matrix:
         for key in config_keys:
             value = job['config'].get(key)
@@ -142,7 +145,7 @@ def show_build(options, project, build_id):
             template = '{t.bold}{t.red}' + template
         template += '{t.off}'
         config = []
-        for key, value in sorted(job['config'].items()):
+        for key, value in sorted(job['config'].items(), key=config_sort):
             if key.startswith('.'):
                 continue
             if isinstance(value, (dict, list)):
