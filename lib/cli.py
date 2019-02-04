@@ -13,6 +13,7 @@ import re
 import shutil
 import subprocess
 import sys
+import types
 import urllib.parse
 import urllib.request
 
@@ -67,7 +68,9 @@ def get_git_url():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--raw-cr', action='store_true')
+    ag = ap.add_mutually_exclusive_group()
+    ag.add_argument('--raw-cr', action='store_true')
+    ag.add_argument('--timestamps', action='store_true')
     ap.add_argument('url', metavar='URL')
     options = ap.parse_args()
     if options.url == '.':
@@ -167,6 +170,37 @@ def show_build(options, project, build_id):
         lib.colors.print(template, url=url, space='')
         print()
 
+def print_ts_lines(fp):
+    template = '{t.dim}{m:02}:{s:05.2f}{t.off}'
+    placeholder = ' ' * len(template.format(m=0, s=0, t=types.SimpleNamespace(dim='', off='')))
+    start = None
+    for line in fp:
+        line = line.rstrip(b'\r\n')
+        *pragmas, text = line.split(b'\r')
+        have_ts = False
+        for pragma in pragmas:
+            pragma = re.sub(br'\x1B\[.*?[a-zA-Z]', b'', pragma)
+            match = re.match(br'\Atravis_time:end:\w+:start=(\d+),finish=(\d+),duration=\d+\Z', pragma)
+            if match is None:
+                continue
+            if start is None:
+                start = int(match.group(1)) / 1E9
+            end = int(match.group(2)) / 1E9
+            t = end - start
+            m, s = divmod(t, 60)
+            if have_ts:
+                print()
+            ts = lib.colors.format(template, m=int(m), s=s)
+            print(ts, end='')
+            have_ts = True
+        if have_ts:
+            print('', end=' ')
+        else:
+            print(placeholder, end=' ')
+        sys.stdout.flush()
+        sys.stdout.buffer.write(text)
+        sys.stdout.buffer.write(b'\n')
+
 @dispatch(r'jobs/(?P<job_id>\d+)')
 def show_job(options, project, job_id):
     url = 'https://api.travis-ci.org/jobs/{id}/log.txt'
@@ -174,6 +208,8 @@ def show_job(options, project, job_id):
     with get(url) as fp:
         if options.raw_cr:
             shutil.copyfileobj(fp, sys.stdout.buffer)
+        elif options.timestamps:
+            print_ts_lines(fp)
         else:
             for line in fp:
                 line = line.rstrip(b'\r\n').rsplit(b'\r', 1)[-1]
