@@ -83,7 +83,7 @@ def main():
         ap.error('unsupported URL')
     for regex, cmd in _dispatch:
         regex = ('/' if regex else '') + regex
-        regex = r'\A/(?P<project>[\w.-]+/[\w.-]+){re}\Z'.format(re=regex)
+        regex = r'\A/(?:github/)?(?P<project>[\w.-]+/[\w.-]+){re}\Z'.format(re=regex)
         match = re.match(regex, path)
         if match is not None:
             break
