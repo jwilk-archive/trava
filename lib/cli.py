@@ -22,16 +22,16 @@ import lib.pager
 
 user_agent = 'trava (https://github.com/jwilk/trava)'
 
+if sys.version_info < (3, 4, 3):
+    raise RuntimeError('Python >= 3.4.3 is required')
+
 def get(url, headers=()):
     headers = dict(headers)
     headers.update(
         {'User-Agent': user_agent}
     )
     request = urllib.request.Request(url, headers=headers)
-    ca_options = {}
-    if sys.version_info < (3, 4, 3):
-        ca_options.update(cadefault=True)
-    return urllib.request.urlopen(request, **ca_options)
+    return urllib.request.urlopen(request)
 
 def get_json(url, headers=()):
     headers = dict(headers)
