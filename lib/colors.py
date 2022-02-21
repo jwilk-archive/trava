@@ -20,12 +20,14 @@ class _seq:
     unreverse = '\x1B[27m'
 
 def _quote_unsafe_char(ch):
+    t = _seq
     if ch == '\t':
-        return '{t.reverse}\t{t.unreverse}'.format(t=_seq)
+        return f'{t.reverse}\t{t.unreverse}'
     elif ch < ' ' or ch == '\x7F':
-        return '{t.reverse}^{c}{t.unreverse}'.format(t=_seq, c=chr(ord('@') ^ ord(ch)))
+        xch = chr(ord('@') ^ ord(ch))
+        return f'{t.reverse}^{xch}{t.unreverse}'
     else:
-        return '{t.reverse}<U+{u:04X}>{t.unreverse}'.format(t=_seq, u=ord(ch))
+        return f'{t.reverse}<U+{ord(ch):04X}>{t.unreverse}'
 
 def _quote_unsafe(s):
     return ''.join(map(_quote_unsafe_char, s))

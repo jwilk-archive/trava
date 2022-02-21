@@ -80,7 +80,7 @@ def main():
         ap.error('unsupported URL')
     for regex, cmd in _dispatch:
         regex = ('/' if regex else '') + regex
-        regex = r'\A/(?:github/)?(?P<project>[\w.-]+/[\w.-]+){re}\Z'.format(re=regex)
+        regex = fr'\A/(?:github/)?(?P<project>[\w.-]+/[\w.-]+){regex}\Z'
         match = re.match(regex, path)
         if match is not None:
             break
@@ -92,8 +92,7 @@ def main():
 @dispatch('')
 @dispatch('branches')
 def show_branches(options, project):
-    url = 'https://api.travis-ci.org/repos/{project}/branches'
-    url = url.format(project=project)
+    url = f'https://api.travis-ci.org/repos/{project}/branches'
     data = get_json(url)
     commits = {c['id']: c for c in data['commits']}
     for branch in data['branches']:
@@ -110,8 +109,8 @@ def show_branches(options, project):
             branch=commit['branch'],
             state=branch['state'],
         )
-        url = 'https://travis-ci.org/{project}/builds/{id}'
-        url = url.format(project=project, id=branch['id'])
+        branch_id = branch['id']
+        url = f'https://travis-ci.org/{project}/builds/{branch_id}'
         template = '{t.cyan}'
         if curious:
             template += '{t.bold}'
@@ -121,8 +120,7 @@ def show_branches(options, project):
 
 @dispatch(r'builds/(?P<build_id>\d+)')
 def show_build(options, project, build_id):
-    url = 'https://api.travis-ci.org/repos/{project}/builds/{id}'
-    url = url.format(project=project, id=build_id)
+    url = f'https://api.travis-ci.org/repos/{project}/builds/{build_id}'
     data = get_json(url)
     config_coll = collections.defaultdict(set)
     matrix = data['matrix']
@@ -155,11 +153,11 @@ def show_build(options, project, build_id):
                 continue
             if len(config_coll[key]) == 1:
                 continue
-            config += ['{key}={value}'.format(key=key, value=value)]
+            config += [f'{key}={value}']
         config = ' '.join(config)
         lib.colors.print(template, number=job['number'], config=config)
-        url = 'https://travis-ci.org/{project}/jobs/{id}'
-        url = url.format(project=project, id=job['id'])
+        job_id = job['id']
+        url = f'https://travis-ci.org/{project}/jobs/{job_id}'
         template = '{t.cyan}'
         if error:
             template += '{t.bold}'
@@ -200,8 +198,7 @@ def print_ts_lines(fp):
 
 @dispatch(r'jobs/(?P<job_id>\d+)')
 def show_job(options, project, job_id):
-    url = 'https://api.travis-ci.org/jobs/{id}/log.txt'
-    url = url.format(id=job_id)
+    url = f'https://api.travis-ci.org/jobs/{job_id}/log.txt'
     with get(url) as fp:
         if options.raw_cr:
             shutil.copyfileobj(fp, sys.stdout.buffer)
