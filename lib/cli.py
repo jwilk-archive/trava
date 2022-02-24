@@ -22,9 +22,6 @@ import lib.pager
 
 user_agent = 'trava (https://github.com/jwilk/trava)'
 
-if sys.version_info < (3, 4, 3):
-    raise RuntimeError('Python >= 3.4.3 is required')
-
 def get(url, headers=()):
     headers = dict(headers)
     headers.update(
