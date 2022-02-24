@@ -22,12 +22,12 @@ class _seq:
 def _quote_unsafe_char(ch):
     t = _seq
     if ch == '\t':
-        return f'{t.reverse}\t{t.unreverse}'
+        s = '\t'
     elif ch < ' ' or ch == '\x7F':
-        xch = chr(ord('@') ^ ord(ch))
-        return f'{t.reverse}^{xch}{t.unreverse}'
+        s = '^' + chr(ord('@') ^ ord(ch))
     else:
-        return f'{t.reverse}<U+{ord(ch):04X}>{t.unreverse}'
+        s = f'<U+{ord(ch):04X}>'
+    return f'{t.reverse}{s}{t.unreverse}'
 
 def _quote_unsafe(s):
     return ''.join(map(_quote_unsafe_char, s))
