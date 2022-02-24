@@ -21,9 +21,7 @@ class _seq:
 
 def _quote_unsafe_char(ch):
     t = _seq
-    if ch == '\t':
-        s = '\t'
-    elif ch < ' ' or ch == '\x7F':
+    if ch < ' ' or ch == '\x7F':
         s = '^' + chr(ord('@') ^ ord(ch))
     else:
         s = f'<U+{ord(ch):04X}>'
